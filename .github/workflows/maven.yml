@@ -58,8 +58,8 @@ jobs:
       - name: Pull the Docker Image
         run: docker pull harish2195/maven-web-application:latest 
       - name: Delete old container
-        run: docker container stop maven-web-application
-             docker container rm maven-web-application
+        run:  docker rm -f maven-web-application
+             # docker stop maven-web-application
       # Run a new container from the pulled image
       - name: Run the Container
         run: docker run -d -p 8080:8080 --name maven-web-application harish2195/maven-web-application:latest
