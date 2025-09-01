@@ -11,7 +11,7 @@
 <body>
 <h1 align="center">Welcome to java application</h1>
 <h1 align="center">Phone Number: +91 1234</h1>
-<h1 align="center">Deploy java web app using githubactions</h1>
+<h1 align="center">Deploy java web app using githubactions and docker</h1>
 
 <h1 align="center">Trainer Name: Harish</h1>
 
