@@ -50,6 +50,7 @@ jobs:
   # Deploy job
   Deploy:
     # Use a self-hosted runner for deployment
+    needs: build
     runs-on: self-hosted
     # Steps to be executed in the Deploy job
     steps:
