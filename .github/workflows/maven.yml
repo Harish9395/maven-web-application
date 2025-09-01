@@ -46,4 +46,17 @@ jobs:
     # Push the built image to DockerHub
     - name: Push to DockerHub
       run: docker push harish2195/maven-web-application:latest
+
+  # Deploy job
+  Deploy:
+    # Use a self-hosted runner for deployment
+    runs-on: self-hosted
+    # Steps to be executed in the Deploy job
+    steps:
+      # Pull the latest Docker image from DockerHub
+      - name: Pull the Docker Image
+        run: docker pull harish2195/maven-web-application:latest 
+      # Run a new container from the pulled image
+      - name: Run the Container
+        run: docker run -d -p 8080:8080 --name maven-web-application harish2195/maven-web-application:latest
         
