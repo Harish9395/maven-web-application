@@ -57,6 +57,9 @@ jobs:
       # Pull the latest Docker image from DockerHub
       - name: Pull the Docker Image
         run: docker pull harish2195/maven-web-application:latest 
+      - name: Delete old container
+        run: docker stop maven-web-application
+             docker rm maven-web-application
       # Run a new container from the pulled image
       - name: Run the Container
         run: docker run -d -p 8080:8080 --name maven-web-application harish2195/maven-web-application:latest
