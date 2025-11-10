@@ -13,6 +13,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: checkout code
@@ -34,33 +38,53 @@ jobs:
     #     "http://${{ secrets.TOMCAT_HOST }}/manager/text/deploy?path=/maven-web-application&update=true"
 
     # Login to DockerHub using secrets for credentials
-    - name: Login to DockerHub
-      env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+    # - name: Login to DockerHub
+    #   env:
+    #       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    #       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    #   run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
+    -  name: Login to GitHub Container Registry
+       uses: docker/login-action@v3
+       with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
     # Build Docker image with a specific tag
     - name: Build Docker Image
-      run: docker build -t harish2195/maven-web-application .
-    # Push the built image to DockerHub
-    - name: Push to DockerHub
-      run: docker push harish2195/maven-web-application:latest
+      run: |
+        IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/maven-web-application:latest
+        docker build -t harish2195/$IMAGE_NAME .
 
-  # Deploy job
-  Deploy:
-    # Use a self-hosted runner for deployment
-    needs: build
-    runs-on: self-hosted
-    # Steps to be executed in the Deploy job
-    steps:
-      # Pull the latest Docker image from DockerHub
-      - name: Pull the Docker Image
-        run: docker pull harish2195/maven-web-application:latest 
-      - name: Delete old container
-        run:  docker rm -f maven-web-application
-             # docker stop maven-web-application
-      # Run a new container from the pulled image
-      - name: Run the Container
-        run: docker run -d -p 8080:8080 --name maven-web-application harish2195/maven-web-application:latest
+    # PUSH Docker image with a specific tag
+    - name: Build Docker Image
+      run: |
+        IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/maven-web-application:latest
+        docker push $IMAGE_NAME .
+      
+
+    # # Build Docker image with a specific tag
+    # - name: Build Docker Image
+    #   run: docker build -t harish2195/maven-web-application .
+    # # Push the built image to DockerHub
+    # - name: Push to DockerHub
+    #   run: docker push harish2195/maven-web-application:latest
+
+  # # Deploy job
+  # Deploy:
+  #   # Use a self-hosted runner for deployment
+  #   needs: build
+  #   runs-on: self-hosted
+  #   # Steps to be executed in the Deploy job
+  #   steps:
+  #     # Pull the latest Docker image from DockerHub
+  #     - name: Pull the Docker Image
+  #       run: docker pull harish2195/maven-web-application:latest 
+  #     - name: Delete old container
+  #       run:  docker rm -f maven-web-application
+  #            # docker stop maven-web-application
+  #     # Run a new container from the pulled image
+  #     - name: Run the Container
+  #       run: docker run -d -p 8080:8080 --name maven-web-application harish2195/maven-web-application:latest
         
